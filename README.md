@@ -179,4 +179,4 @@
  |Parameter.getParameterizedType |	Eclipse OpenJ9	| Omitted* |	Accepted |
  |Parameter.toString |	Eclipse OpenJ9	| Omitted* |	Accepted |
 
-**Table IV. Reported non-conformances (*some links are ommited because of blind review).**
+**Table IV. Reported non-conformances (some links are ommited because of blind review).**
