@@ -1,6 +1,6 @@
 # Java Reflection API: Revealing the Dark Side of the Mirror (Artifacts)
 
-## OpenJDK and Eclipse OpenJ9 Test Suites Analysis
+## Eclipse OpenJ9 and OpenJDK Test Suites Analysis
  
  * Analyzed commits:
    * [Eclipse OpenJ9](https://github.com/eclipse/openj9) - 65956fdf1d954cfd8580eb6b03468f943c8fffbd
@@ -32,37 +32,35 @@
 
 ### Source Code
 
- * View source code: [Folder](reacender)
+ * [View source code](reacender)
  * Clone repository:
 
  ```
  git clone https://github.com/non-conformances-research/icse2019.git
  cd icse2019/reacender
  ```
+ 
+## Evaluation
 
 ### How to run ReAcenDer
 
  * Requirements
+	* Linux
 	* Maven 3.3+
-	* Java 1.8+
+	* Java Virtual Machines:
+	  * [Oracle 1.8.0_151](https://www.java.com/en/download/)
+	  * [OpenJDK 1.8.0_141](http://openjdk.java.net/install/)
+	  * [Eclipse OpenJ9 0.8.0](https://adoptopenjdk.net/releases.html?variant=openjdk8-openj9)
+	  * [IBM J9 8.0.5.10](https://www.ibm.com/developerworks/java/jdk/)
  * Run the following commands
 	```
 	export ORACLE_PATH=<oracle_jvm_installation_path>
-	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
 	export OPENJDK_PATH=<openjdk_jvm_installation_path>
+	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
 	export IBM_J9_PATH=<ibm_j9_jvm_installation_path>
 	sh reacender/scripts/run_icse_experiment.sh
 	
 	```
- 
-## Evaluating ReAcenDer
-
-### Java Virtual Machines:
-
- * [Oracle 1.8.0_151](https://www.java.com/en/download/)
- * [OpenJDK 1.8.0_141](http://openjdk.java.net/install/)
- * [Eclipse OpenJ9 0.8.0](https://adoptopenjdk.net/releases.html?variant=openjdk8-openj9)
- * [IBM J9 8.0.5.10](https://www.ibm.com/developerworks/java/jdk/)
 
 ### Test Cases
 
