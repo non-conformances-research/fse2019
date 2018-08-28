@@ -58,10 +58,10 @@
 
 ### Java Virtual Machines:
 
- * [Oracle 1.8.0_151](link)
- * [OpenJDK 1.8.0_141](link)
- * [Eclipse OpenJ9 0.8.0](link)
- * [IB J9 8.0.5.10](link)
+ * [Oracle 1.8.0_151](https://www.java.com/en/download/)
+ * [OpenJDK 1.8.0_141](http://openjdk.java.net/install/)
+ * [Eclipse OpenJ9 0.8.0](https://adoptopenjdk.net/releases.html?variant=openjdk8-openj9)
+ * [IBM J9 8.0.5.10](https://www.ibm.com/developerworks/java/jdk/)
 
 ### Test Cases
 
@@ -88,6 +88,20 @@
  * [Input Programs](subjects.xlsx)
 
 ### Results
+
+ * Test cases added to Eclipse OpenJ9 test suite (link to pull request omitted because of blind review)
+   * [Class.getConstructor](test-cases/org/openj9/test/reflect/GetConstructorTests.java)
+   * [Class.getConstructors](test-cases/org/openj9/test/reflect/GetConstructorsTests.java)
+   * [Class.getDeclaredConstructor](test-cases/org/openj9/test/reflect/GetDeclaredConstructorTests.java)
+   * [Class.getDeclaredConstructors](test-cases/org/openj9/test/reflect/GetDeclaredConstructorsTests.java)
+   * [Class.getDeclaredField](test-cases/org/openj9/test/reflect/GetDeclaredFieldTests.java)
+   * [Class.getDeclaredFields](test-cases/org/openj9/test/reflect/GetDeclaredFieldsTests.java)
+   * [Class.getDeclaredMethod](test-cases/org/openj9/test/reflect/GetDeclaredMethodTests.java)
+   * [Class.getDeclaredMethods](test-cases/org/openj9/test/reflect/GetDeclaredMethodsTests.java)
+   * [Class.getField](test-cases/org/openj9/test/reflect/GetFieldTests.java)
+   * [Class.getFields](test-cases/org/openj9/test/reflect/GetFieldsTests.java)
+   * [Class.getMethod](test-cases/org/openj9/test/reflect/GetMethodTests.java)
+   * [Class.getMethods](test-cases/org/openj9/test/reflect/GetMethodsTests.java)
 
  * Detected Non-conformances
  

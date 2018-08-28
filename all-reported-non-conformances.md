@@ -866,7 +866,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 
 Eclipse OpenJ9: null
 
-Oracle HotSpot: file:/home/felipepontes/.../target/classes/
+Oracle HotSpot: file:/home/user/.../target/classes/
 
 **Expected result:**
 
