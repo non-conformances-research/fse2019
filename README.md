@@ -58,7 +58,8 @@
 	export OPENJDK_PATH=<openjdk_jvm_installation_path>
 	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
 	export IBM_J9_PATH=<ibm_j9_jvm_installation_path>
-	sh reacender/scripts/run_icse_experiment.sh
+	cd reacender
+	sh scripts/run_icse_experiment.sh
 	
 	```
 
