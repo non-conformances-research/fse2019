@@ -1,54 +1,8 @@
 # Eclipse OpenJ9
 
-## Method.invoke
-
-Method.invoke presents different exception messages when invoking multiple times a method with wrong number of arguments
-
-The following program presents a null exception message after invoking 17 times a method with wrong number of arguments.
-
-```
-import java.lang.reflect.Method;
-public class A {
-    public static void main(String[] args) throws NoSuchMethodException {
-        A a = new A();
-        for (int i = 0; i < 17; i++) {
-            Method method = A.class.getMethod("wait", long.class);
-            try {
-                method.invoke(a, 0, 1);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-openjdk version "1.8.0_162"
-OpenJDK Runtime Environment (build 1.8.0_162-b12)
-Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
-OpenJ9   - e24e8aa9
-OMR      - 3e8296b4
-JCL      - ee1e77df1d based on jdk8u162-b12)
-
-**Steps to reproduce:**
-
-	1. Compile above program
-	2. Run it using openj9 java
-
-**Current result:**
-
-wrong number of arguments (x16)
-null
-
-**Expected result:**
-
-Always print "wrong number of arguments" message.
-
 ## Class.getConstructor
 
-Class.getConstructor throws exception after invoking Class.newInstance
+### Class.getConstructor throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getConstructor (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getConstructor-java.lang.Class...-), "...a Constructor object that reflects the specified public constructor of the class represented by this Class object" must be returned. But using the following program the constructor of class B can not be retrieved:
 
@@ -78,12 +32,14 @@ public class C {
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -92,6 +48,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -103,15 +60,19 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public B()
 
-## Class.getConstructors throws exception after invoking Class.newInstance
+## Class.getConstructors
+
+### Class.getConstructors throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getConstructors (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getConstructors--), "...an array containing Constructor objects reflecting all the public constructors of the class represented by this Class object" must be returned. But using the following program constructors of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -135,15 +96,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -152,6 +116,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -163,6 +128,7 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
@@ -170,10 +136,11 @@ public B()
 
 ## Class.getDeclaredConstructor
 
-Class.getDeclaredConstructor throws exception after invoking Class.newInstance
+### Class.getDeclaredConstructor throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getDeclaredConstructor (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getDeclaredConstructor-java.lang.Class...-), "...a Constructor object that reflects the specified constructor of the class or interface represented by this Class object" must be returned. But using the following program declared constructor of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -195,15 +162,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -212,6 +182,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -223,6 +194,7 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
@@ -230,10 +202,11 @@ public B()
 
 ## Class.getDeclaredConstructors
 
-Class.getDeclaredConstructors throws exception after invoking Class.newInstance
+### Class.getDeclaredConstructors throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getDeclaredConstructors (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getDeclaredConstructors--), "...an array of Constructor objects reflecting all the constructors declared by the class represented by this Class object" must be returned. But using the following program declared constructors of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -257,15 +230,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -274,6 +250,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -285,6 +262,7 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
@@ -292,10 +270,11 @@ public B()
 
 ## Class.getDeclaredField
 
-Class.getDeclaredField throws exception after invoking Class.newInstance
+### Class.getDeclaredField throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getDeclaredField (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getDeclaredField-java.lang.String-), "...a Field object that reflects the specified declared field of the class or interface represented by this Class object" must be returned. But using the following program declared field of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -318,15 +297,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -335,6 +317,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -346,6 +329,7 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
@@ -353,13 +337,80 @@ public int B.x
 
 ## Class.getDeclaredFields
 
+### Class.getDeclaredFields throws exception after invoking Class.newInstance
+
+Accordingly to Javadoc of Class.getDeclaredFields, "...an array of Field objects reflecting all the fields declared by the class or interface represented by this Class object" must be returned. But using the following program declared fields of class B can not be retrieved:
+
+```
+public class A {
+   static {
+      String x = null;
+      x.getClass();
+   }
+}
+
+public class B extends A {
+   public int x;
+}
+
+public class C {
+   public static void main(String[] args) throws NoSuchMethodException, NoSuchFieldException {
+      try {
+         B.class.newInstance();
+      } catch (ExceptionInInitializerError e) {
+      } catch (Exception e) {
+      } finally {
+         for (Field f : B.class.getDeclaredFields()) {
+            System.out.println(f);
+         }
+      }
+   }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using openj9 java
+
+**Current result:**
+
+```
+Exception in thread "main" java.lang.NoClassDefFoundError: samples.newInstance.B (initialization failure)
+	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
+	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
+	at java.lang.J9VMInternals.prepare(J9VMInternals.java:300)
+	at java.lang.Class.getDeclaredFields(Class.java:830)
+	at samples.newInstance.C.main(C.java:27)
+Caused by: java.lang.NullPointerException
+	at samples.newInstance.A.<clinit>(A.java:7)
+	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
+	at java.lang.Class.newInstance(Class.java:1773)
+	at samples.newInstance.C.main(C.java:11)
+```
+
+**Expected result:**
+
+public int x
 
 ## Class.getDeclaredMethod
 
-Class.getDeclaredMethod throws exception after invoking Class.newInstance
+### Class.getDeclaredMethod throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getDeclaredMethod (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getDeclaredMethod-java.lang.String-java.lang.Class...-), "...a Method object that reflects the specified declared method of the class or interface represented by this Class object" must be returned. But using the following program declared method of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -382,15 +433,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -399,6 +453,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -411,17 +466,19 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public void B.m()
 
-=====================================================================
+## Class.getDeclaredMethods
 
-Class.getDeclaredMethods throws exception after invoking Class.newInstance
+### Class.getDeclaredMethods throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getDeclaredMethods (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getDeclaredMethods--), "...an array containing Method objects reflecting all the declared methods of the class or interface represented by this Class object" must be returned. But using the following program declared methods of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -446,15 +503,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -463,6 +523,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -474,17 +535,19 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public void B.m()
 
-=====================================================================
+## Class.getField
 
-Class.getField throws exception after invoking Class.newInstance
+### Class.getField throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getField (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getField-java.lang.String-), "...a Field object that reflects the specified public member field of the class or interface represented by this Class object" must be returned. But using the following program field of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -507,15 +570,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -524,6 +590,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -535,17 +602,19 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public int B.x
 
-=====================================================================
+## Class.getFields
 
-Class.getFields throws exception after invoking Class.newInstance
+### Class.getFields throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getFields (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getFields--), "...an array containing Field objects reflecting all the accessible public fields of the class or interface represented by this Class object" must be returned. But using the following program fields of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -570,15 +639,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -587,6 +659,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -598,17 +671,19 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public int B.x
 
-=====================================================================
+## Class.getMethod
 
-Class.getMethod throws exception after invoking Class.newInstance
+### Class.getMethod throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getMethod (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getMethod-java.lang.String-java.lang.Class...-), "...a Method object that reflects the specified public member method of the class or interface represented by this Class object" must be returned. But using the following program method of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -631,15 +706,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -648,6 +726,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -660,17 +739,19 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public void B.m()
 
-=====================================================================
+## Class.getMethods
 
-Class.getMethods throws exception after invoking Class.newInstance
+### Class.getMethods throws exception after invoking Class.newInstance
 
 Accordingly to Javadoc of Class.getMethods (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getMethods--), "...an array containing Method objects reflecting all the public methods of the class or interface represented by this Class object" must be returned. But using the following program methods of class B can not be retrieved:
 
+```
 public class A {
    static {
       String x = null;
@@ -695,15 +776,18 @@ public class C {
       }
    }
 }
+```
 
 **Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 **Steps to reproduce:**
 
@@ -712,6 +796,7 @@ JCL - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
+```
 Exception in thread "main" java.lang.NoClassDefFoundError: B (initialization failure)
 	at java.lang.J9VMInternals.initializationAlreadyFailed(J9VMInternals.java:96)
 	at java.lang.J9VMInternals.prepareClassImpl(Native Method)
@@ -723,159 +808,135 @@ Caused by: java.lang.NullPointerException
 	at java.lang.J9VMInternals.newInstanceImpl(Native Method)
 	at java.lang.Class.newInstance(Class.java:1773)
 	at C.main(C.java:2)
+```
 
 **Expected result:**
 
 public void B.m()
 
-=====================================================================
+## Class.getResource
 
-Different results presented by Class.getResource method
+### Different results presented by Class.getResource method
 
 Class.getResource method presents different results as presented by Oracle HotSpot JVM when executing the following program:
 
+```
+package p;
 public enum A {
     X, Y
 }
 
-ublic class B {
+package p;
+public class B {
     public static void main(String[] args) {
         System.out.println(A[].class.getResource(""));
     }
 }
+```
 
 **Affected versions:**
 
 Eclipse OpenJ9
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 Oracle HotSpot
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
 **Steps to reproduce:**
 
-	1. Compile above program
-	2. Run it using Eclipse OpenJ9 java
-	3. Run it using Oracle HotSpot java
+1. Compile above program
+2. Run it using Eclipse OpenJ9 java
+3. Run it using Oracle HotSpot java
 
 **Current result:**
 
 Eclipse OpenJ9: null
+
 Oracle HotSpot: file:/home/felipepontes/.../target/classes/
 
 **Expected result:**
 
 Both JVMs presenting same resources.
 
-========================================================================================================================
+## Class.getResourceAsStream
 
-Different results presented by Class.getResourceAsStream method
+### Different results presented by Class.getResourceAsStream method
 
 Class.getResourceAsStream method presents different results as presented by Oracle HotSpot JVM when executing the following program:
 
+```
+package p;
 public enum A {
     X, Y
 }
 
-ublic class B {
+package p;
+public class B {
     public static void main(String[] args) {
         System.out.println(A[].class.getResourceAsStream(""));
     }
 }
+```
 
 **Affected versions:**
 
 Eclipse OpenJ9
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
 Oracle HotSpot
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
 **Steps to reproduce:**
 
-	1. Compile above program
-	2. Run it using Eclipse OpenJ9 java
-	3. Run it using Oracle HotSpot java
+1. Compile above program
+2. Run it using Eclipse OpenJ9 java
+3. Run it using Oracle HotSpot java
 
 **Current result:**
 
 Eclipse OpenJ9: null
+
 Oracle HotSpot: java.io.ByteArrayInputStream@...
 
 **Expected result:**
 
 Both JVMs presenting same resources as stream.
 
-========================================================================================================================
+## Constructor.getAnnotatedParameterTypes
 
-Parameter.getAnnotatedType throws exception when trying to get parameter type in an inner class
-
-An exception is thrown when executing the following program:
-
-public class A {
-    class Inner {
-        Inner (Iterator<String> delegate) {
-        }
-    }
-    public static void main(String[] args) {
-        Class<?>[] classes = A.class.getDeclaredClasses();
-        System.out.println(classes[0].getDeclaredConstructors()[0].getParameters()[0].getAnnotatedType().getType());
-    }
-}
-
-
-**affected versions:**
-
-openjdk version "1.8.0_162"
-OpenJDK Runtime Environment (build 1.8.0_162-b12)
-Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
-OpenJ9 - e24e8aa
-OMR - 3e8296b4
-JCL - ee1e77df1d based on jdk8u162-b12)
-
-**steps to reproduce:**
-
-	1. compile above program
-	2. run it using openj9 java
-
-**current result:**
-
-Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 1
-	at java.lang.reflect.Executable.getAllGenericParameterTypes(Executable.java:318)
-	at java.lang.reflect.Executable.getAnnotatedParameterTypes(Executable.java:693)
-	at java.lang.reflect.Parameter.getAnnotatedType(Parameter.java:237)
-	at A.main(A.java:8)
-
-**expected result:**
-
-class A
-
-=====================================================================
-
-Constructor.getAnnotatedParameterTypes throws exception when trying to get annotated parameter type in an enum
+### Constructor.getAnnotatedParameterTypes throws exception when trying to get annotated parameter type in an enum
 
 An exception is thrown when executing the following program:
 
+```
 public enum A {}
 
 public class B {
@@ -887,40 +948,47 @@ public class B {
       }
    }
 }
+```
 
 
-**affected versions:**
+**Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
-**steps to reproduce:**
+**Steps to reproduce:**
 
-	1. compile above program
-	2. run it using openj9 java
+1. compile above program
+2. run it using openj9 java
 
-**current result:**
+**Current result:**
 
+```
 Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 0
 	at java.lang.reflect.Executable.getAllGenericParameterTypes(Executable.java:318)
 	at java.lang.reflect.Executable.getAnnotatedParameterTypes(Executable.java:693)
 	at B.main(B.java:4)
+```
 
 **expected result:**
 
 class java.lang.String
+
 int
 
-=====================================================================
+## Executable.getAnnotatedParameterTypes
 
-Executable.getAnnotatedParameterTypes throws exception when trying to get annotated parameter type in an inner class
+### Executable.getAnnotatedParameterTypes throws exception when trying to get annotated parameter type in an inner class
 
 An exception is thrown when executing the following program:
 
+```
 public class A {
     class Inner {
         Inner (Iterator<String> delegate) {
@@ -931,84 +999,142 @@ public class A {
 	System.out.println(classes[0].getDeclaredConstructors()[0].getParameters()[0].getDeclaringExecutable().getAnnotatedParameterTypes()[0].getType());
     }
 }
+```
 
-**affected versions:**
+**Affected versions:**
 
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
-**steps to reproduce:**
+**Steps to reproduce:**
 
-	1. compile above program
-	2. run it using openj9 java
+1. compile above program
+2. run it using openj9 java
 
-**current result:**
+**Current result:**
 
+```
 Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 1
 	at java.lang.reflect.Executable.getAllGenericParameterTypes(Executable.java:318)
 	at java.lang.reflect.Executable.getAnnotatedParameterTypes(Executable.java:693)
 	at A.main(A.java:8)
+```
 
 **expected result:**
 
 class A
 
-=====================================================================
+## Method.invoke
 
-Parameter.toString throws exception when trying to get parameter description in an enum
+### Method.invoke presents different exception messages when invoking multiple times a method with wrong number of arguments
+
+The following program presents a null exception message after invoking 17 times a method with wrong number of arguments.
+
+```
+import java.lang.reflect.Method;
+public class A {
+    public static void main(String[] args) throws NoSuchMethodException {
+        A a = new A();
+        for (int i = 0; i < 17; i++) {
+            Method method = A.class.getMethod("wait", long.class);
+            try {
+                method.invoke(a, 0, 1);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using openj9 java
+
+**Current result:**
+
+wrong number of arguments (x16)
+
+null
+
+**Expected result:**
+
+Always print "wrong number of arguments" message.
+
+## Parameter.getAnnotatedType
+
+### Parameter.getAnnotatedType throws exception when trying to get parameter type in an inner class
 
 An exception is thrown when executing the following program:
 
-public enum A {}
-
-public class B {
-   public static void main(String[] args) {
-      for (Constructor c : A.class.getDeclaredConstructors()) {
-         for (Parameter p : c.getParameters()) {
-            System.out.println(p.toString());
-         }
-      }
-   }
+```
+public class A {
+    class Inner {
+        Inner (Iterator<String> delegate) {
+        }
+    }
+    public static void main(String[] args) {
+        Class<?>[] classes = A.class.getDeclaredClasses();
+        System.out.println(classes[0].getDeclaredConstructors()[0].getParameters()[0].getAnnotatedType().getType());
+    }
 }
+```
 
+**Affected versions:**
 
-**affected versions:**
-
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
-**steps to reproduce:**
+**Steps to reproduce:**
 
-	1. compile above program
-	2. run it using openj9 java
+1. compile above program
+2. run it using openj9 java
 
-**current result:**
+**Current result:**
 
-Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 0
+```
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 1
 	at java.lang.reflect.Executable.getAllGenericParameterTypes(Executable.java:318)
-	at java.lang.reflect.Parameter.getParameterizedType(Parameter.java:201)
-	at java.lang.reflect.Parameter.toString(Parameter.java:125)
-	at B.main(B.java:5)
+	at java.lang.reflect.Executable.getAnnotatedParameterTypes(Executable.java:693)
+	at java.lang.reflect.Parameter.getAnnotatedType(Parameter.java:237)
+	at A.main(A.java:8)
+```
 
 **expected result:**
 
-java.lang.String arg0
-int arg1
+class A
 
-=====================================================================
+## Parameter.getParameterizedType
 
-Parameter.getParameterizedType throws exception when trying to get parameter parameterized type in an enum
+### Parameter.getParameterizedType throws exception when trying to get parameter parameterized type in an enum
 
 An exception is thrown when executing the following program:
 
+```
 public enum A {}
 
 public class B {
@@ -1020,120 +1146,101 @@ public class B {
       }
    }
 }
+```
 
+**Affected versions:**
 
-**affected versions:**
-
+```
 openjdk version "1.8.0_162"
 OpenJDK Runtime Environment (build 1.8.0_162-b12)
 Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
 OpenJ9 - e24e8aa
 OMR - 3e8296b4
 JCL - ee1e77df1d based on jdk8u162-b12)
+```
 
-**steps to reproduce:**
+**Steps to reproduce:**
 
 	1. compile above program
 	2. run it using openj9 java
 
-**current result:**
+**Current result:**
 
+```
 Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 0
 	at java.lang.reflect.Executable.getAllGenericParameterTypes(Executable.java:318)
 	at java.lang.reflect.Parameter.getParameterizedType(Parameter.java:201)
 	at B.main(B.java:5)
+```
+
+**Expected result:**
+
+class java.lang.String
+
+int
+
+## Parameter.toString
+
+### Parameter.toString throws exception when trying to get parameter description in an enum
+
+An exception is thrown when executing the following program:
+
+```
+public enum A {}
+
+public class B {
+   public static void main(String[] args) {
+      for (Constructor c : A.class.getDeclaredConstructors()) {
+         for (Parameter p : c.getParameters()) {
+            System.out.println(p.toString());
+         }
+      }
+   }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9 - e24e8aa
+OMR - 3e8296b4
+JCL - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. compile above program
+2. run it using openj9 java
+
+**Current result:**
+
+```
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 0
+	at java.lang.reflect.Executable.getAllGenericParameterTypes(Executable.java:318)
+	at java.lang.reflect.Parameter.getParameterizedType(Parameter.java:201)
+	at java.lang.reflect.Parameter.toString(Parameter.java:125)
+	at B.main(B.java:5)
+```
 
 **expected result:**
 
-class java.lang.String
-int
+java.lang.String arg0
 
-=====================================================================
+int arg1
 
-Oracle
 
-=====================================================================
+# Oracle
 
-Class.getResource method presents wrong result
+## Class.getAnnotations
 
-Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResource-java.lang.String-) Class.getResource method returns "A URL object or null if no resource with this name is found". However, a different result is returned when executing the following program:
-
-public enum A {
-    X, Y
-}
-
-ublic class B {
-    public static void main(String[] args) {
-        System.out.println(A[].class.getResource(""));
-    }
-}
-
-**Affected versions:**
-
-Oracle HotSpot
-
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-
-**Steps to reproduce:**
-
-	1. Compile above program
-	2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-file:.../target/classes/
-
-**Expected result:**
-
-null
-
-=====================================================================
-
-Class.getResourceAsStream method presents wrong result
-
-Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResourceAsStream-java.lang.String-) Class.getResourceAsStream method returns "A InputStream object or null if no resource with this name is found". However, a different result is returned when executing the following program:
-
-public enum A {
-    X, Y
-}
-
-public class B {
-    public static void main(String[] args) {
-        System.out.println(A[].class.getResourceAsStream(""));
-    }
-}
-
-**Affected versions:**
-
-Oracle HotSpot
-
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-
-**Steps to reproduce:**
-
-	1. Compile above program
-	2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-java.io.ByteArrayInputStream@...
-
-**Expected result:**
-
-null
-
-=================================================================================
-
-Class.getAnnotations presents annotations parameters in random order
+### Class.getAnnotations presents annotations parameters in random order
 
 Class.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1148,34 +1255,38 @@ public class B {
 	}
     }
 }
+```
 
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-=================================================================================
+## Class.getDeclaredAnnotations
 
-Class.getDeclaredAnnotations presents annotations parameters in random order
+### Class.getDeclaredAnnotations presents annotations parameters in random order
 
 Class.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1190,123 +1301,121 @@ public class B {
 	}
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-=================================================================================
+## Class.getResource
 
-Method.getAnnotations presents annotations parameters in random order
+### Class.getResource method presents wrong result
 
-Method.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResource-java.lang.String-) Class.getResource method returns "A URL object or null if no resource with this name is found". However, a different result is returned when executing the following program:
 
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
+```
+package p;
+public enum A {
+    X, Y
 }
 
+package p;
 public class B {
-    @A()
-    public void m() {
-    }
     public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-            for(Annotation a : m.getAnnotations()) {
-                System.out.println(a);
-            }
-        }
+        System.out.println(A[].class.getResource(""));
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+file:.../target/classes/
 
-Expected result:
+**Expected result:**
 
-Annotations parameters always in the same order.
+null
 
-=================================================================================
+## Class.getResourceAsStream
 
-Method.getDeclaredAnnotations() presents annotations parameters in random order
+### Class.getResourceAsStream method presents wrong result
 
-Method.getDeclaredAnnotations() sometimes presents annotations parameters in different order when executing the following program:
+Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResourceAsStream-java.lang.String-) Class.getResourceAsStream method returns "A InputStream object or null if no resource with this name is found". However, a different result is returned when executing the following program:
 
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
+```
+package p;
+public enum A {
+    X, Y
 }
 
+package p;
 public class B {
-    @A()
-    public void m() {
-    }
     public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-            for(Annotation a : m.getDeclaredAnnotations()) {
-                System.out.println(a);
-            }
-        }
+        System.out.println(A[].class.getResourceAsStream(""));
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+java.io.ByteArrayInputStream@...
 
-Expected result:
+**Expected result:**
 
-Annotations parameters always in the same order.
+null
 
-=================================================================================
+## Executable.getAnnotations
 
-Executable.getAnnotations presents annotations parameters in random order
+### Executable.getAnnotations presents annotations parameters in random order
 
 Executable.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1327,33 +1436,37 @@ public class B {
         }
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-=================================================================================
+## Executable.getDeclaredAnnotations
 
-Executable.getDeclaredAnnotations presents annotations parameters in random order
+### Executable.getDeclaredAnnotations presents annotations parameters in random order
 
 Executable.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1374,79 +1487,37 @@ public class B {
         }
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-Current result:
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-Expected result:
-
-Annotations parameters always in the same order.
-
-=================================================================================
-
-Method.getParameterAnnotations presents annotations parameters in random order
-
-Method.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    public void m(@A() String x) {
-    }
-    public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-	    for (Annotation[] annotations : m.getParameterAnnotations()) {
-                for (Annotation a : annotations) {
-                    System.out.println(a);
-                }
-            }
-        }
-    }
-}
-
-Affected versions:
-
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-=================================================================================
+## Executable.getParameterAnnotations
 
-Executable.getParameterAnnotations presents annotations parameters in random order
+### Executable.getParameterAnnotations presents annotations parameters in random order
 
 Executable.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1468,33 +1539,37 @@ public class B {
         }
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-=================================================================================
+## Field.getAnnotations
 
-Field.getAnnotations presents annotations parameters in random order
+### Field.getAnnotations presents annotations parameters in random order
 
 Field.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1512,33 +1587,37 @@ public class B {
         }
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-=================================================================================
+## Field.getDeclaredAnnotations
 
-Field.getDeclaredAnnotations presents annotations parameters in random order
+### Field.getDeclaredAnnotations presents annotations parameters in random order
 
 Field.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
 
+```
 @Retention(RUNTIME)
 public @interface A {
     String name() default "A";
@@ -1556,33 +1635,185 @@ public class B {
         }
     }
 }
+```
 
-Affected versions:
+**Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
-Steps to reproduce:
+**Steps to reproduce:**
 
 1. Compile above program
 2. Run it using Oracle HotSpot java
 
-Current result:
+**Current result:**
 
 Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
 
-Expected result:
+**Expected result:**
 
 Annotations parameters always in the same order.
 
-========================================================================================================================
+## Method.getAnnotations
 
-Issue on Method.invoke when using wrong number of arguments
+### Method.getAnnotations presents annotations parameters in random order
+
+Method.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public void m() {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+            for(Annotation a : m.getAnnotations()) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Annotations parameters always in the same order.
+
+## Method.getDeclaredAnnotations
+
+### Method.getDeclaredAnnotations presents annotations parameters in random order
+
+Method.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public void m() {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+            for(Annotation a : m.getDeclaredAnnotations()) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Annotations parameters always in the same order.
+
+## Method.getParameterAnnotations
+
+### Method.getParameterAnnotations presents annotations parameters in random order
+
+Method.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    public void m(@A() String x) {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+	    for (Annotation[] annotations : m.getParameterAnnotations()) {
+                for (Annotation a : annotations) {
+                    System.out.println(a);
+                }
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Annotations parameters always in the same order.
+
+## Method.invoke
+
+### Issue on Method.invoke when using wrong number of arguments
 
 The following program presents a null exception message after invoking 17 times a method with wrong number of arguments.
 
+```
 import java.lang.reflect.Method;
 public class A {
     public static void main(String[] args) throws NoSuchMethodException {
@@ -1597,7 +1828,7 @@ public class A {
         }
     }
 }
-
+```
 
 **Affected versions:**
 
@@ -1608,12 +1839,13 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 
 **Steps to reproduce:**
 
-	1. Compile above program
-	2. Run it using Oracle HotSpot java
+1. Compile above program
+2. Run it using Oracle HotSpot java
 
 **Current result:**
 
 wrong number of arguments (x16)
+
 null
 
 **Expected result:**
