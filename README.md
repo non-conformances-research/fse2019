@@ -32,7 +32,7 @@
 
 ### Source Code
 
- * View code: [Folder](icse2019/reacender)
+ * View source code: [Folder](icse2019/reacender)
  * Clone repository:
 
  ```
@@ -45,12 +45,13 @@
  * Requirements
 	* Maven 3.3+
 	* Java 1.8+
- * Change configurations at file ```src/main/resources/config.properties```
-	* repositories_dir: Folder path that ReaCenDer will clone all input programs from GitHub.
-	* results_dir: Folder path that ReaCenDer will log results.
  * Run the following commands
 	```
-	sh reacender/run_icse_experiment.sh
+	export ORACLE_PATH=<oracle_jvm_installation_path>
+	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
+	export OPENJDK_PATH=<openjdk_jvm_installation_path>
+	export IBM_J9_PATH=<ibm_j9_jvm_installation_path>
+	sh reacender/scripts/run_icse_experiment.sh
 	
 	```
  
