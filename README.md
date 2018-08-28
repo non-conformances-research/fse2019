@@ -32,7 +32,7 @@
 
 ### Source Code
 
- * View source code: [Folder](icse2019/reacender)
+ * View source code: [Folder](reacender)
  * Clone repository:
 
  ```
