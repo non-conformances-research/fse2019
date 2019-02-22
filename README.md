@@ -60,7 +60,7 @@
 	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
 	export IBM_J9_PATH=<ibm_j9_jvm_installation_path>
 	cd technique
-	sh scripts/run_icse_experiment.sh
+	sh scripts/run_fse_experiment.sh
 	
 	```
 
