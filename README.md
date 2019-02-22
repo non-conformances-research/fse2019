@@ -3,8 +3,8 @@
 ## Eclipse OpenJ9 and OpenJDK Test Suites Analysis
  
  * Analyzed commits:
-   * [Eclipse OpenJ9](https://github.com/eclipse/openj9) - 65956fdf1d954cfd8580eb6b03468f943c8fffbd
-   * [OpenJDK](http://hg.openjdk.java.net/jdk8u) - a0672a294b9aff852f35336932ddf3d46465f28c
+   * [Eclipse OpenJ9](https://github.com/eclipse/openj9) - c2aa03488caa3ac99061c828ec347aeafc40c1e5
+   * [OpenJDK](http://hg.openjdk.java.net/jdk8u) - 1d288ad17d9c947ac53f5a3031e39527309751ff
  * Test suites characteristics:
 
 
@@ -28,37 +28,38 @@
  * [Questions](survey/questions.pdf)
  * [All responses](survey/responses.xlsx)
 
-## ReAcenDer
+## Technique
 
 ### Source Code
 
- * [View source code](reacender)
+ * [View source code](technique)
  * Clone repository:
 
  ```
- git clone https://github.com/non-conformances-research/icse2019.git
- cd icse2019/reacender
+ git clone https://github.com/non-conformances-research/fse2019.git
+ cd fse2019/technique
  ```
  
 ## Evaluation
 
-### How to run ReAcenDer
+### How to run the automatic steps of our technique
 
  * Requirements
 	* Linux
 	* Maven 3.3+
 	* Java Virtual Machines:
-	  * [Oracle 1.8.0_151](https://www.java.com/en/download/)
-	  * [OpenJDK 1.8.0_141](http://openjdk.java.net/install/)
-	  * [Eclipse OpenJ9 0.8.0](https://adoptopenjdk.net/releases.html?variant=openjdk8-openj9)
-	  * [IBM J9 8.0.5.10](https://www.ibm.com/developerworks/java/jdk/)
+	  * [Oracle 1.8.0_151](https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase8-2177648.html)
+	  * [OpenJDK 1.8.0_141](http://hg.openjdk.java.net/jdk8u/jdk8u/archive/jdk8u141-b15.tar.bz2)
+	  * [Eclipse OpenJ9 0.8.0](https://github.com/AdoptOpenJDK/openjdk8-openj9-releases/releases/download/jdk8u162-b12_openj9-0.8.0/OpenJDK8-OPENJ9_x64_Linux_jdk8u162-b12_openj9-0.8.0.tar.gz)
+	  * [IBM J9 8.0.5.10](https://www-01.ibm.com/support/docview.wss?uid=swg24042430#80510)
+ * Install all JVMs
  * Run the following commands
 	```
 	export ORACLE_PATH=<oracle_jvm_installation_path>
 	export OPENJDK_PATH=<openjdk_jvm_installation_path>
 	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
 	export IBM_J9_PATH=<ibm_j9_jvm_installation_path>
-	cd reacender
+	cd technique
 	sh scripts/run_icse_experiment.sh
 	
 	```
@@ -103,47 +104,47 @@
    * [Class.getMethod](test-cases/org/openj9/test/reflect/GetMethodTests.java)
    * [Class.getMethods](test-cases/org/openj9/test/reflect/GetMethodsTests.java)
 
- * Detected Non-conformances
+ * Detected Non-conformance Candidates
  
  
-  | Id 	 | Method with Non-conformance | Test Cases | Failures | JVMs | Status |
-  |:----------:|:---------------|---------------:|---------------:|:---------------:|:---------------:|
-  | 1 | Class.getPackage | 473,436|471 | IBM J9 | Unreported |
-  | 2 | Class.getAnnotations | 937,860 | 3,602 | Oracle/OpenJDK | Open/Unreported |
-  | 3 | Class.getConstructor | 470,384 |59,934 | Eclipse OpenJ9 | Fixed |
-  | 4 | Class.getConstructors | 468,663 | 979 | Eclipse OpenJ9 | Fixed |
-  | 5 | Class.getDeclaredAnnotations | 939,368 | 3,490 | Oracle/OpenJDK | Duplicated/Unreported |
-  | 6 | Class.getDeclaredConstructor | 469,624 | 15,389 | Eclipse OpenJ9 | Fixed |
-  | 7 | Class.getDeclaredConstructors | 466,646 | 1,013 | Eclipse OpenJ9 | Fixed |
-  | 8 | Class.getDeclaredField | 2,350,808 | 298 | Eclipse OpenJ9 | Fixed |
-  | 9 | Class.getDeclaredFields | 467,522 | 449 | Eclipse OpenJ9 | Fixed |
-  | 10 | Class.getDeclaredMethod | 8,184,703 | 480 | Eclipse OpenJ9 | Fixed |
-  | 11 | Class.getDeclaredMethods | 467,347 | 1,265 | Eclipse OpenJ9 | Fixed |
-  | 12 | Class.getField | 2,359,361 | 1,768 | Eclipse OpenJ9 | Fixed |
-  | 13 | Class.getFields | 470,437 | 880 | Eclipse OpenJ9 | Fixed |
-  | 14 | Class.getMethod | 8,205,417 | 40 | Eclipse OpenJ9 | Fixed |
-  | 15 | Class.getMethods | 467,821 | 160,213 | Eclipse OpenJ9 | Fixed |
-  | 16 | Class.getResource | 1,178,325 | 200 | Oracle/OpenJDK/Eclipse OpenJ9 | Accepted/Unreported/Fixed |
-  | 17 | Class.getResourceAsStream | 1,172,325 | 200 | Oracle/OpenJDK/Eclipse OpenJ9 | Accepted/Unreported/Fixed |
-  | 18 | Constructor.getAnnotatedParameterTypes | 356,884 | 7,657 | Eclipse OpenJ9 | Fixed |
-  | 19 | Executable.getAnnotatedParameterTypes | 88,702 | 435 | Eclipse OpenJ9 | Fixed |
-  | 20 | Executable.getAnnotations | 177,220 | 41 | Oracle/OpenJDK | Open/Unreported |
-  | 21 | Executable.getDeclaredAnnotations | 177,412 | 48 | Oracle/OpenJDK | Open/Unreported |
-  | 22 | Executable.getParameterAnnotations | 177,212 | 7 | Oracle/OpenJDK | Open/Unreported |
-  | 23 | Field.getAnnotations |603,028|120 | Oracle/OpenJDK | Open/Unreported |
-  | 24 | Field.getDeclaredAnnotations | 615,960 | 122 | Oracle/OpenJDK | Open/Unreported |
-  | 25 | Method.getAnnotations | 965,740 | 293 | Oracle/OpenJDK | Open/Unreported |
-  | 26 | Method.getDeclaredAnnotations | 976,304 | 338 | Oracle/OpenJDK | Open/Unreported |
-  | 27 | Method.getParameterAnnotations | 963,708 | 45 | Oracle/OpenJDK | Open/Unreported |
-  | 28 | Method.invoke | 1,468,228 | 240 | Oracle/OpenJDK/Eclipse OpenJ9 | Duplicated/Unreported/Rejected |
-  | 29 | Package.getImplementationTitle | 59,014 | 117 | IBM J9 | Unreported |
-  | 30 | Parameter.getAnnotatedType | 88,806 | 1,135 | Eclipse OpenJ9 | Fixed |
-  | 31 | Parameter.getParameterizedType | 88,764 | 1,131 | Eclipse OpenJ9 | Fixed |
-  | 32 | Parameter.toString | 88,664 | 1,154 | Eclipse OpenJ9 | Fixed |
+  | Id 	 | Method with Non-conformance Candidate | Test Cases | Failures | Oracle | OpenJDK | Eclipse OpenJ9 | IBM J9 |
+  |:----------:|:---------------|---------------:|---------------:|:---------------:|:---------------:|:---------------:|:---------------:|
+  | 1 | Class.getPackage | 473,436|471 | C | C | C | -
+  | 2 | Class.getAnnotations | 937,860 | 3,602 | O | - | C | C
+  | 3 | Class.getConstructor | 470,384 |59,934 | C | C | F | -
+  | 4 | Class.getConstructors | 468,663 | 979 | C | C | F | -
+  | 5 | Class.getDeclaredAnnotations | 939,368 | 3,490 | D | - | C | C
+  | 6 | Class.getDeclaredConstructor | 469,624 | 15,389 | C | C | F | -
+  | 7 | Class.getDeclaredConstructors | 466,646 | 1,013 | C | C | F | -
+  | 8 | Class.getDeclaredField | 2,350,808 | 298 | C | C | F | -
+  | 9 | Class.getDeclaredFields | 467,522 | 449 | C | C | F | -
+  | 10 | Class.getDeclaredMethod | 8,184,703 | 480 | C | C | F | -
+  | 11 | Class.getDeclaredMethods | 467,347 | 1,265 | C | C | F | -
+  | 12 | Class.getField | 2,359,361 | 1,768 | C | C | F | -
+  | 13 | Class.getFields | 470,437 | 880 | C | C | F | -
+  | 14 | Class.getMethod | 8,205,417 | 40 | C | C | F | -
+  | 15 | Class.getMethods | 467,821 | 160,213 | C | C | F | -
+  | 16 | Class.getResource | 1,178,325 | 200 | A | - | F | -
+  | 17 | Class.getResourceAsStream | 1,172,325 | 200 | A | - | F | -
+  | 18 | Constructor.getAnnotatedParameterTypes | 356,884 | 7,657 | C | C | F | -
+  | 19 | Executable.getAnnotatedParameterTypes | 88,702 | 435 | C | C | F | -
+  | 20 | Executable.getAnnotations | 177,220 | 41 | O | - | C | C
+  | 21 | Executable.getDeclaredAnnotations | 177,412 | 48 | O | - | C | C
+  | 22 | Executable.getParameterAnnotations | 177,212 | 7 | O | - | C | C
+  | 23 | Field.getAnnotations |603,028|120 | O | - | C | C
+  | 24 | Field.getDeclaredAnnotations | 615,960 | 122 | O | - | C | C
+  | 25 | Method.getAnnotations | 965,740 | 293 | O | - | C | C
+  | 26 | Method.getDeclaredAnnotations | 976,304 | 338 | O | - | C | C
+  | 27 | Method.getParameterAnnotations | 963,708 | 45 | O | - | C | C
+  | 28 | Method.invoke | 1,468,228 | 240 | D | - | R | -
+  | 29 | Package.getImplementationTitle | 59,014 | 117 | C | C | C | -
+  | 30 | Parameter.getAnnotatedType | 88,806 | 1,135 | C | C | F | -
+  | 31 | Parameter.getParameterizedType | 88,764 | 1,131 | C | C | F | -
+  | 32 | Parameter.toString | 88,664 | 1,154 | C | C | F | -
 
-**Table III. Detected Java Teflection API non-conformances. Test Cases: number of test cases executed by ReAcenDer calling the method. Failures: number of test cases exposing non-conformance in the method. JVMs: Java Virtual Machines presenting a non-conformance. Status: non-conformances reporting status on JVM's bug trackers.**
+**Table III. Detected Java Reflection API non-conformances. Test Cases: number of test cases executed by our technique calling the method. Failures: number of test cases exposing non-conformance candidate in the method. Status: – = Unreported bug; O = Bug Open; F = Fixed bug; A = Accepted bug; R = Rejected bug; C = Correct result; D = Duplicated bug.**
  
- * ReAcenDer reported false positives for the following methods of Java Reflection API:
+ * Our technique reported false positives for the following methods of Java Reflection API:
    * Class.hashCode
    * Class.newInstance
    * Constructor.isAccessible
@@ -154,7 +155,7 @@
    * Method.isAccessible
    * Parameter.getDeclaringExecutable
    * Parameter.hashCode
- * Reported Non-conformances ([see all](all-reported-non-conformances.md))
+ * Reported Non-conformance Candidates ([see all](all-reported-non-conformances.md))
 
  
  | Method with Non-conformance | JVM | Report ID/Bug Tracker URL | Status |
@@ -193,4 +194,4 @@
  |Parameter.getParameterizedType |	Eclipse OpenJ9	| Omitted* |	Accepted |
  |Parameter.toString |	Eclipse OpenJ9	| Omitted* |	Accepted |
 
-**Table IV. Reported non-conformances (some links are ommited because of blind review).**
+**Table IV. Reported non-conformance candidates (some links are ommited because of blind review).**
