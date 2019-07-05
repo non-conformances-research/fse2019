@@ -22,3 +22,15 @@ mvn exec:java -Dexec.mainClass="oracles.ReflectionOracle" -Dexec.args="oracle ib
 mvn exec:java -Dexec.mainClass="oracles.ReflectionOracle" -Dexec.args="eclipse-openj9 openjdk"
 mvn exec:java -Dexec.mainClass="oracles.ReflectionOracle" -Dexec.args="eclipse-openj9 ibm-j9"
 mvn exec:java -Dexec.mainClass="oracles.ReflectionOracle" -Dexec.args="openjdk ibm-j9"
+
+
+cd classifier
+sh filter_results.sh
+virtualenv env
+source env/bin/activate
+
+for nc in `cat non-conformances.txt`; do
+        python bugs_classifier.py results/${nc}.txt; 
+done
+
+deactivate
