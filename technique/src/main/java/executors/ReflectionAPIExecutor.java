@@ -196,8 +196,7 @@ public class ReflectionAPIExecutor {
 							for (int i = 0; i < parameters.length - 1; i++) {
 								wrongArguments[i] = parameters[i];
 							}
-							elements = getParametersString(parameterTypes, wrongArguments);
-							subKey = key + "#" + elements + ":";
+							subKey = key + "#[wrongArguments]:";
 							if (!methodInvocationResults.containsKey(subKey) && !skippedKeys.contains(subKey)) {
 								methodInvocationResults.put(subKey, invokeMethod(instance, method, wrongArguments));
 							}
@@ -262,7 +261,7 @@ public class ReflectionAPIExecutor {
 										Method getDeclaredConstructor = Class.class.getMethod("getDeclaredConstructor", Class[].class);
 										publicMethods.add(getDeclaredConstructor);
 										for (Constructor c : constructors) {
-											String elements = getParametersString(c.getTypeParameters());
+											String elements = getParametersString(c.getParameterTypes(), c.getParameters());
 											subKey = instance + "#" + type.getSimpleName() + "#" + getConstructor.getName() + "#" + elements + ":";
 											if (!methodInvocationResults.containsKey(subKey) && !skippedKeys.contains(subKey)) {
 												methodInvocationResults.put(subKey, invokeMethod(instance, getConstructor, c.getParameterTypes()));
@@ -373,12 +372,16 @@ public class ReflectionAPIExecutor {
 		for (TypeVariable tv : parameterTypes) {
 			elements += tv.getTypeName() + ",";
 		}
-		elements = elements.substring(0, elements.length() - 1);
+		if (elements.length() == 1) {
+			elements += "void";
+		} else {
+			elements = elements.substring(0, elements.length() - 1);
+		}
 		elements += "]";
 		return elements;
 	}
 
-	private static String getParametersString(Class<?>[] parameterTypes, Object[] parameters) {
+	public static String getParametersString(Class<?>[] parameterTypes, Object[] parameters) {
 		String elements = "[";
 		for (int i = 0; i < parameters.length; i++) {
             Object parameterSample = parameters[i];
@@ -391,7 +394,11 @@ public class ReflectionAPIExecutor {
             }
             elements += parameterTypes[i].getSimpleName() + "->" + parameterSampleString + ",";
         }
-		elements = elements.substring(0, elements.length() - 1);
+		if (elements.length() == 1) {
+			elements += "void";
+		} else {
+			elements = elements.substring(0, elements.length() - 1);
+		}
 		elements += "]";
 		return elements;
 	}
@@ -405,7 +412,7 @@ public class ReflectionAPIExecutor {
 				methodInvocationResult = method.invoke(instance);
 			}
 		} catch (Exception e) {
-			methodInvocationResult = e.getMessage();
+			methodInvocationResult = "<exception><type>" + e.toString() + "</type><message>" + e.getMessage() + "</message></exception>";
 		} finally {
 			return methodInvocationResult;
 		}
