@@ -1,3 +1,578 @@
+# Specification
+
+## Class.getResource
+
+### Class.getResource method presents wrong result
+
+Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResource-java.lang.String-) Class.getResource method returns "A URL object or null if no resource with this name is found". However, a different result is returned when executing the following program:
+
+```
+package p;
+public enum A {
+    X, Y
+}
+
+package p;
+public class B {
+    public static void main(String[] args) {
+        System.out.println(A[].class.getResource(""));
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+file:.../target/classes/
+
+**Expected result:**
+
+Underdetermined.
+
+## Class.getResourceAsStream
+
+### Class.getResourceAsStream method presents wrong result
+
+Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResourceAsStream-java.lang.String-) Class.getResourceAsStream method returns "A InputStream object or null if no resource with this name is found". However, a different result is returned when executing the following program:
+
+```
+package p;
+public enum A {
+    X, Y
+}
+
+package p;
+public class B {
+    public static void main(String[] args) {
+        System.out.println(A[].class.getResourceAsStream(""));
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+java.io.ByteArrayInputStream@...
+
+**Expected result:**
+
+Underdetermined.
+
+## Class.getAnnotations
+
+### Class.getAnnotations presents annotations parameters in random order
+
+Class.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+@A()
+public class B {
+    public static void main(String[] args) {
+	for(Annotation a : B.class.getAnnotations()) {
+	    System.out.println(a);
+	}
+    }
+}
+```
+
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Class.getDeclaredAnnotations
+
+### Class.getDeclaredAnnotations presents annotations parameters in random order
+
+Class.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+@A()
+public class B {
+    public static void main(String[] args) {
+	for(Annotation a : B.class.getDeclaredAnnotations()) {
+	    System.out.println(a);
+	}
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Executable.getAnnotations
+
+### Executable.getAnnotations presents annotations parameters in random order
+
+Executable.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public void m(int x) {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+	    for (Parameter p : m.getParameters()) {
+                for (Annotation a : p.getDeclaringExecutable().getAnnotations()) {
+                    System.out.println(a);
+                }
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Executable.getDeclaredAnnotations
+
+### Executable.getDeclaredAnnotations presents annotations parameters in random order
+
+Executable.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public void m() {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+	    for (Parameter p : m.getParameters()) {
+                for (Annotation a : p.getDeclaringExecutable().getDeclaredAnnotations()) {
+                    System.out.println(a);
+                }
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Executable.getParameterAnnotations
+
+### Executable.getParameterAnnotations presents annotations parameters in random order
+
+Executable.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    public void m(@A() String x) {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+	    for (Parameter p : m.getParameters()) {
+                for (Annotation[] annotations : p.getDeclaringExecutable().getParameterAnnotations()) {
+                    for (Annotation a : annotations) {
+                        System.out.println(a);
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Field.getAnnotations
+
+### Field.getAnnotations presents annotations parameters in random order
+
+Field.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public String f;
+    public static void main(String[] args) {
+	for (Field f : B.class.getFields()) {
+            for (Annotation a : f.getAnnotations()) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Field.getDeclaredAnnotations
+
+### Field.getDeclaredAnnotations presents annotations parameters in random order
+
+Field.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public String f;
+    public static void main(String[] args) {
+	for (Field f : B.class.getFields()) {
+            for (Annotation a : f.getDeclaredAnnotations()) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Method.getAnnotations
+
+### Method.getAnnotations presents annotations parameters in random order
+
+Method.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public void m() {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+            for(Annotation a : m.getAnnotations()) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Method.getDeclaredAnnotations
+
+### Method.getDeclaredAnnotations presents annotations parameters in random order
+
+Method.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    @A()
+    public void m() {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+            for(Annotation a : m.getDeclaredAnnotations()) {
+                System.out.println(a);
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
+## Method.getParameterAnnotations
+
+### Method.getParameterAnnotations presents annotations parameters in random order
+
+Method.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
+
+```
+@Retention(RUNTIME)
+public @interface A {
+    String name() default "A";
+    String namespace() default "B" ;
+}
+
+public class B {
+    public void m(@A() String x) {
+    }
+    public static void main(String[] args) {
+	for (Method m : B.class.getMethods()) {
+	    for (Annotation[] annotations : m.getParameterAnnotations()) {
+                for (Annotation a : annotations) {
+                    System.out.println(a);
+                }
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+
+**Expected result:**
+
+Underdetermined.
+
 # Eclipse OpenJ9
 
 ## Class.getConstructor
@@ -814,122 +1389,6 @@ Caused by: java.lang.NullPointerException
 
 public void B.m()
 
-## Class.getResource
-
-### Different results presented by Class.getResource method
-
-Class.getResource method presents different results as presented by Oracle HotSpot JVM when executing the following program:
-
-```
-package p;
-public enum A {
-    X, Y
-}
-
-package p;
-public class B {
-    public static void main(String[] args) {
-        System.out.println(A[].class.getResource(""));
-    }
-}
-```
-
-**Affected versions:**
-
-Eclipse OpenJ9
-
-```
-openjdk version "1.8.0_162"
-OpenJDK Runtime Environment (build 1.8.0_162-b12)
-Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
-OpenJ9 - e24e8aa
-OMR - 3e8296b4
-JCL - ee1e77df1d based on jdk8u162-b12)
-```
-
-Oracle HotSpot
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Eclipse OpenJ9 java
-3. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Eclipse OpenJ9: null
-
-Oracle HotSpot: file:/home/user/.../target/classes/
-
-**Expected result:**
-
-Both JVMs presenting same resources.
-
-## Class.getResourceAsStream
-
-### Different results presented by Class.getResourceAsStream method
-
-Class.getResourceAsStream method presents different results as presented by Oracle HotSpot JVM when executing the following program:
-
-```
-package p;
-public enum A {
-    X, Y
-}
-
-package p;
-public class B {
-    public static void main(String[] args) {
-        System.out.println(A[].class.getResourceAsStream(""));
-    }
-}
-```
-
-**Affected versions:**
-
-Eclipse OpenJ9
-
-```
-openjdk version "1.8.0_162"
-OpenJDK Runtime Environment (build 1.8.0_162-b12)
-Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
-OpenJ9 - e24e8aa
-OMR - 3e8296b4
-JCL - ee1e77df1d based on jdk8u162-b12)
-```
-
-Oracle HotSpot
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Eclipse OpenJ9 java
-3. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Eclipse OpenJ9: null
-
-Oracle HotSpot: java.io.ByteArrayInputStream@...
-
-**Expected result:**
-
-Both JVMs presenting same resources as stream.
-
 ## Constructor.getAnnotatedParameterTypes
 
 ### Constructor.getAnnotatedParameterTypes throws exception when trying to get annotated parameter type in an enum
@@ -982,6 +1441,100 @@ class java.lang.String
 
 int
 
+### Constructor.getAnnotatedParameterTypes returns wrong type to annotated parameter related to a static inner class
+
+
+**Sample program:**
+
+```
+import java.lang.reflect.AnnotatedType;
+
+public class A<T> {
+
+    A(B<T> b) {
+    }
+
+    static class B<T> {
+
+    }
+
+    public static void main(String[] args) {
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
+    }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Eclipse OpenJ9 java
+
+**Current result:**
+
+A.A$B&lt;T>
+
+**Expected result:**
+
+A$B&lt;T>
+
+### Constructor.getAnnotatedParameterTypes returns wrong type to annotated parameter related to an inner class
+
+**Sample program:**
+
+```
+import java.lang.reflect.AnnotatedType;
+
+public class A<T> {
+
+    A(B<T> b) {
+    }
+
+    class B<T> {
+    }
+
+    public static void main(String[] args) {
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
+    }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Eclipse OpenJ9 java
+
+**Current result:**
+
+A&lt;T>.B&lt;T>
+
+**Expected result:**
+
+A&lt;T>$B&lt;T>
+
 ## Executable.getAnnotatedParameterTypes
 
 ### Executable.getAnnotatedParameterTypes throws exception when trying to get annotated parameter type in an inner class
@@ -1030,6 +1583,99 @@ Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index
 
 class A
 
+### Executable.getAnnotatedParameterTypes returns wrong type to annotated parameter related to a static inner class
+
+**Sample program:**
+
+```
+import java.lang.reflect.AnnotatedType;
+
+public class A<T> {
+
+    A(B<T> b) {
+    }
+
+    static class B<T> {
+
+    }
+
+    public static void main(String[] args) {
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getParameters()[0].getDeclaringExecutable().getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
+    }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Eclipse OpenJ9 java
+
+**Current result:**
+
+A.A$B&lt;T>
+
+**Expected result:**
+
+A$B&lt;T>
+
+### Executable.getAnnotatedParameterTypes returns wrong type to annotated parameter related to an inner class
+
+**Sample program:**
+
+```
+import java.lang.reflect.AnnotatedType;
+
+public class A<T> {
+
+    A(B<T> b) {
+    }
+
+    class B<T> {
+    }
+
+    public static void main(String[] args) {
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getParameters()[0].getDeclaringExecutable().getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
+    }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Eclipse OpenJ9 java
+
+**Current result:**
+
+A&lt;T>.B&lt;T>
+
+**Expected result:**
+
+A&lt;T>$B&lt;T>
+
 ## Method.invoke
 
 ### Method.invoke presents different exception messages when invoking multiple times a method with wrong number of arguments
@@ -1071,13 +1717,105 @@ JCL      - ee1e77df1d based on jdk8u162-b12)
 
 **Current result:**
 
-wrong number of arguments (x16)
-
+wrong number of arguments (x16) <br>
 null
 
 **Expected result:**
 
 Always print "wrong number of arguments" message.
+
+### Method.invoke presents different exception messages when invoking multiple times a method with wrong argument type
+
+The following program presents a null exception message after invoking 17 times a method with wrong argument type.
+
+```
+import java.lang.reflect.Method;
+public class A {
+    public static void main(String[] args) throws NoSuchMethodException {
+        A a = new A();
+        for (int i = 0; i < 17; i++) {
+            Method method = A.class.getMethod("wait", long.class);
+            try {
+                method.invoke(a, "0");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using openj9 java
+
+**Current result:**
+
+argument type mismatch (x16)<br>
+null
+
+**Expected result:**
+
+Always print "argument type mismatch" message.
+
+### Method.invoke presents different exception messages when invoking multiple times a method with wrong instance type
+
+The following program presents a ClassCastException message after invoking 17 times a method with wrong instance type.
+
+```
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Method;
+public class A {
+    public static void main(String[] args) throws NoSuchMethodException {
+        Method method = AnnotatedType.class.getDeclaredMethod("getType");
+        for (int i = 0; i < 17; i++) {
+            try {
+                method.invoke("");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
+```
+
+
+**Affected versions:**
+
+```
+openjdk version "1.8.0_162"
+OpenJDK Runtime Environment (build 1.8.0_162-b12)
+Eclipse OpenJ9 VM (build openj9-0.8.0, JRE 1.8.0 Linux amd64-64 Compressed References 20180315_120 (JIT enabled, AOT enabled)
+OpenJ9   - e24e8aa9
+OMR      - 3e8296b4
+JCL      - ee1e77df1d based on jdk8u162-b12)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using openj9 java
+
+**Current result:**
+
+object is not an instance of declaring class (x16) <br>
+java.lang.ClassCastException@...
+
+**Expected result:**
+
+Always print "object is not an instance of declaring class" message.
 
 ## Parameter.getAnnotatedType
 
@@ -1234,71 +1972,29 @@ int arg1
 
 # Oracle
 
-## Class.getAnnotations
+## Constructor.getAnnotatedParameterTypes
 
-### Class.getAnnotations presents annotations parameters in random order
+### Constructor.getAnnotatedParameterTypes returns wrong type to static inner class
 
-Class.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+A wrong value is returned to an annotated type parameter related to a inner class.
+
+**Sample program:**
 
 ```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
+import java.lang.reflect.AnnotatedType;
 
-@A()
-public class B {
-    public static void main(String[] args) {
-	for(Annotation a : B.class.getAnnotations()) {
-	    System.out.println(a);
-	}
+public class A<T> {
+
+    A(B<T> b) {
     }
-}
-```
 
+    static class B<T> {
 
-**Affected versions:**
+    }
 
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Class.getDeclaredAnnotations
-
-### Class.getDeclaredAnnotations presents annotations parameters in random order
-
-Class.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-@A()
-public class B {
     public static void main(String[] args) {
-	for(Annotation a : B.class.getDeclaredAnnotations()) {
-	    System.out.println(a);
-	}
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
     }
 }
 ```
@@ -1315,32 +2011,36 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 **Steps to reproduce:**
 
 1. Compile above program
-2. Run it using Oracle HotSpot java
+2. Run it using Oracle java
 
 **Current result:**
 
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+A.A$B&lt;T>
 
 **Expected result:**
 
-Annotations parameters always in the same order.
+A$B&lt;T>
 
-## Class.getResource
+### Constructor.getAnnotatedParameterTypes returns wrong type related to inner class
 
-### Class.getResource method presents wrong result
+A wrong value is returned to an annotated type parameter related to a static inner class.
 
-Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResource-java.lang.String-) Class.getResource method returns "A URL object or null if no resource with this name is found". However, a different result is returned when executing the following program:
+**Sample program:**
 
 ```
-package p;
-public enum A {
-    X, Y
-}
+import java.lang.reflect.AnnotatedType;
 
-package p;
-public class B {
+public class A<T> {
+
+    A(B<T> b) {
+    }
+
+    class B<T> {
+    }
+
     public static void main(String[] args) {
-        System.out.println(A[].class.getResource(""));
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
     }
 }
 ```
@@ -1357,32 +2057,39 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 **Steps to reproduce:**
 
 1. Compile above program
-2. Run it using Oracle HotSpot java
+2. Run it using Oracle java
 
 **Current result:**
 
-file:.../target/classes/
+A&lt;T>.B&lt;T>
 
 **Expected result:**
 
-null
+A&lt;T>$B&lt;T>
 
-## Class.getResourceAsStream
+## Executable.getAnnotatedParameterTypes
 
-### Class.getResourceAsStream method presents wrong result
+### Executable.getAnnotatedParameterTypes returns wrong type to static inner class
 
-Accordingly to Javadoc (https://docs.oracle.com/javase/8/docs/api/java/lang/Class.html#getResourceAsStream-java.lang.String-) Class.getResourceAsStream method returns "A InputStream object or null if no resource with this name is found". However, a different result is returned when executing the following program:
+A wrong value is returned to an annotated type parameter related to a inner class.
+
+**Sample program:**
 
 ```
-package p;
-public enum A {
-    X, Y
-}
+import java.lang.reflect.AnnotatedType;
 
-package p;
-public class B {
+public class A<T> {
+
+    A(B<T> b) {
+    }
+
+    static class B<T> {
+
+    }
+
     public static void main(String[] args) {
-        System.out.println(A[].class.getResourceAsStream(""));
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getParameters()[0].getDeclaringExecutable().getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
     }
 }
 ```
@@ -1399,41 +2106,36 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 **Steps to reproduce:**
 
 1. Compile above program
-2. Run it using Oracle HotSpot java
+2. Run it using Oracle java
 
 **Current result:**
 
-java.io.ByteArrayInputStream@...
+A.A$B&lt;T>
 
 **Expected result:**
 
-null
+A$B&lt;T>
 
-## Executable.getAnnotations
+### Executable.getAnnotatedParameterTypes returns wrong type related to inner class
 
-### Executable.getAnnotations presents annotations parameters in random order
+A wrong value is returned to an annotated type parameter related to a static inner class.
 
-Executable.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
+**Sample program:**
 
 ```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
+import java.lang.reflect.AnnotatedType;
 
-public class B {
-    @A()
-    public void m(int x) {
+public class A<T> {
+
+    A(B<T> b) {
     }
+
+    class B<T> {
+    }
+
     public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-	    for (Parameter p : m.getParameters()) {
-                for (Annotation a : p.getDeclaringExecutable().getAnnotations()) {
-                    System.out.println(a);
-                }
-            }
-        }
+        AnnotatedType[] annotatedParameterTypes = A.class.getDeclaredConstructors()[0].getParameters()[0].getDeclaringExecutable().getAnnotatedParameterTypes();
+        System.out.println(annotatedParameterTypes[0].getType());
     }
 }
 ```
@@ -1450,362 +2152,15 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 **Steps to reproduce:**
 
 1. Compile above program
-2. Run it using Oracle HotSpot java
+2. Run it using Oracle java
 
 **Current result:**
 
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
+A&lt;T>.B&lt;T>
 
 **Expected result:**
 
-Annotations parameters always in the same order.
-
-## Executable.getDeclaredAnnotations
-
-### Executable.getDeclaredAnnotations presents annotations parameters in random order
-
-Executable.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    @A()
-    public void m() {
-    }
-    public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-	    for (Parameter p : m.getParameters()) {
-                for (Annotation a : p.getDeclaringExecutable().getDeclaredAnnotations()) {
-                    System.out.println(a);
-                }
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Executable.getParameterAnnotations
-
-### Executable.getParameterAnnotations presents annotations parameters in random order
-
-Executable.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    public void m(@A() String x) {
-    }
-    public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-	    for (Parameter p : m.getParameters()) {
-                for (Annotation[] annotations : p.getDeclaringExecutable().getParameterAnnotations()) {
-                    for (Annotation a : annotations) {
-                        System.out.println(a);
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Field.getAnnotations
-
-### Field.getAnnotations presents annotations parameters in random order
-
-Field.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    @A()
-    public String f;
-    public static void main(String[] args) {
-	for (Field f : B.class.getFields()) {
-            for (Annotation a : f.getAnnotations()) {
-                System.out.println(a);
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Field.getDeclaredAnnotations
-
-### Field.getDeclaredAnnotations presents annotations parameters in random order
-
-Field.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    @A()
-    public String f;
-    public static void main(String[] args) {
-	for (Field f : B.class.getFields()) {
-            for (Annotation a : f.getDeclaredAnnotations()) {
-                System.out.println(a);
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Method.getAnnotations
-
-### Method.getAnnotations presents annotations parameters in random order
-
-Method.getAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    @A()
-    public void m() {
-    }
-    public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-            for(Annotation a : m.getAnnotations()) {
-                System.out.println(a);
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Method.getDeclaredAnnotations
-
-### Method.getDeclaredAnnotations presents annotations parameters in random order
-
-Method.getDeclaredAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    @A()
-    public void m() {
-    }
-    public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-            for(Annotation a : m.getDeclaredAnnotations()) {
-                System.out.println(a);
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
-
-## Method.getParameterAnnotations
-
-### Method.getParameterAnnotations presents annotations parameters in random order
-
-Method.getParameterAnnotations sometimes presents annotations parameters in different order when executing the following program:
-
-```
-@Retention(RUNTIME)
-public @interface A {
-    String name() default "A";
-    String namespace() default "B" ;
-}
-
-public class B {
-    public void m(@A() String x) {
-    }
-    public static void main(String[] args) {
-	for (Method m : B.class.getMethods()) {
-	    for (Annotation[] annotations : m.getParameterAnnotations()) {
-                for (Annotation a : annotations) {
-                    System.out.println(a);
-                }
-            }
-        }
-    }
-}
-```
-
-**Affected versions:**
-
-```
-Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
-java version "1.8.0_151"
-Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
-Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
-```
-
-**Steps to reproduce:**
-
-1. Compile above program
-2. Run it using Oracle HotSpot java
-
-**Current result:**
-
-Sometimes A(name=A, namespace=B), sometimes A(namespace=B, name=A).
-
-**Expected result:**
-
-Annotations parameters always in the same order.
+A&lt;T>$B&lt;T>
 
 ## Method.invoke
 
@@ -1832,10 +2187,12 @@ public class A {
 
 **Affected versions:**
 
+```
 Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
 java version "1.8.0_151"
 Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
 
 **Steps to reproduce:**
 
@@ -1844,10 +2201,98 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
 
 **Current result:**
 
-wrong number of arguments (x16)
-
+wrong number of arguments (x16)<br>
 null
 
 **Expected result:**
 
 Always print "wrong number of arguments" message.
+
+### Issue on Method.invoke when using wrong argument type
+
+The following program presents a null exception message after invoking 17 times a method with wrong argument type.
+
+```
+import java.lang.reflect.Method;
+public class A {
+    public static void main(String[] args) throws NoSuchMethodException {
+        A a = new A();
+        for (int i = 0; i < 17; i++) {
+            Method method = A.class.getMethod("wait", long.class);
+            try {
+                method.invoke(a, "0");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
+```
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+argument type mismatch (x16)<br>
+null
+
+**Expected result:**
+
+Always print "argument type mismatch" message.
+
+### Issue on Method.invoke when using wrong instance type
+
+The following program presents a ClassCastException message after invoking 17 times a method with wrong instance type.
+
+```
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Method;
+public class A {
+    public static void main(String[] args) throws NoSuchMethodException {
+        Method method = AnnotatedType.class.getDeclaredMethod("getType");
+        for (int i = 0; i < 17; i++) {
+            try {
+                method.invoke("");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
+```
+
+
+**Affected versions:**
+
+```
+Picked up _JAVA_OPTIONS:   -Dawt.useSystemAAFontSettings=gasp
+java version "1.8.0_151"
+Java(TM) SE Runtime Environment (build 1.8.0_151-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.151-b12, mixed mode)
+```
+
+**Steps to reproduce:**
+
+1. Compile above program
+2. Run it using Oracle HotSpot java
+
+**Current result:**
+
+object is not an instance of declaring class (x16) <br>
+java.lang.ClassCastException@...
+
+**Expected result:**
+
+Always print "object is not an instance of declaring class" message.

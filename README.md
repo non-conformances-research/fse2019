@@ -52,9 +52,18 @@
 	  * [OpenJDK 1.8.0_141](http://hg.openjdk.java.net/jdk8u/jdk8u/archive/jdk8u141-b15.tar.bz2)
 	  * [Eclipse OpenJ9 0.8.0](https://github.com/AdoptOpenJDK/openjdk8-openj9-releases/releases/download/jdk8u162-b12_openj9-0.8.0/OpenJDK8-OPENJ9_x64_Linux_jdk8u162-b12_openj9-0.8.0.tar.gz)
 	  * [IBM J9 8.0.5.10](https://www-01.ibm.com/support/docview.wss?uid=swg24042430#80510)
+	* Python 2.7
+	* Pip
+	* Vrtualenv
  * Install all JVMs
  * Run the following commands
 	```
+	cd classifier
+	virtualenv env
+	source env/bin/activate
+	pip install -r requirements.txt
+	deactivate
+	cd ..
 	export ORACLE_PATH=<oracle_jvm_installation_path>
 	export OPENJDK_PATH=<openjdk_jvm_installation_path>
 	export ECLIPSE_OPENJ9_PATH=<eclipse_openj9_jvm_installation_path>
@@ -90,7 +99,7 @@
 
 ### Results
 
- * Test cases added to Eclipse OpenJ9 test suite (link to pull request omitted because of blind review)
+ * Test cases added to Eclipse OpenJ9 test suite (https://github.com/eclipse/openj9/pull/1792)
    * [Class.getConstructor](test-cases/org/openj9/test/reflect/GetConstructorTests.java)
    * [Class.getConstructors](test-cases/org/openj9/test/reflect/GetConstructorsTests.java)
    * [Class.getDeclaredConstructor](test-cases/org/openj9/test/reflect/GetDeclaredConstructorTests.java)
@@ -103,48 +112,8 @@
    * [Class.getFields](test-cases/org/openj9/test/reflect/GetFieldsTests.java)
    * [Class.getMethod](test-cases/org/openj9/test/reflect/GetMethodTests.java)
    * [Class.getMethods](test-cases/org/openj9/test/reflect/GetMethodsTests.java)
-
- * Detected Non-conformance Candidates
  
- 
-  | Id 	 | Method with Non-conformance Candidate | Test Cases | Failures | Oracle | OpenJDK | Eclipse OpenJ9 | IBM J9 |
-  |:----------:|:---------------|---------------:|---------------:|:---------------:|:---------------:|:---------------:|:---------------:|
-  | 1 | Class.getPackage | 473,436|471 | C | C | C | -
-  | 2 | Class.getAnnotations | 937,860 | 3,602 | O | - | C | C
-  | 3 | Class.getConstructor | 470,384 |59,934 | C | C | F | -
-  | 4 | Class.getConstructors | 468,663 | 979 | C | C | F | -
-  | 5 | Class.getDeclaredAnnotations | 939,368 | 3,490 | D | - | C | C
-  | 6 | Class.getDeclaredConstructor | 469,624 | 15,389 | C | C | F | -
-  | 7 | Class.getDeclaredConstructors | 466,646 | 1,013 | C | C | F | -
-  | 8 | Class.getDeclaredField | 2,350,808 | 298 | C | C | F | -
-  | 9 | Class.getDeclaredFields | 467,522 | 449 | C | C | F | -
-  | 10 | Class.getDeclaredMethod | 8,184,703 | 480 | C | C | F | -
-  | 11 | Class.getDeclaredMethods | 467,347 | 1,265 | C | C | F | -
-  | 12 | Class.getField | 2,359,361 | 1,768 | C | C | F | -
-  | 13 | Class.getFields | 470,437 | 880 | C | C | F | -
-  | 14 | Class.getMethod | 8,205,417 | 40 | C | C | F | -
-  | 15 | Class.getMethods | 467,821 | 160,213 | C | C | F | -
-  | 16 | Class.getResource | 1,178,325 | 200 | A | - | F | -
-  | 17 | Class.getResourceAsStream | 1,172,325 | 200 | A | - | F | -
-  | 18 | Constructor.getAnnotatedParameterTypes | 356,884 | 7,657 | C | C | F | -
-  | 19 | Executable.getAnnotatedParameterTypes | 88,702 | 435 | C | C | F | -
-  | 20 | Executable.getAnnotations | 177,220 | 41 | O | - | C | C
-  | 21 | Executable.getDeclaredAnnotations | 177,412 | 48 | O | - | C | C
-  | 22 | Executable.getParameterAnnotations | 177,212 | 7 | O | - | C | C
-  | 23 | Field.getAnnotations |603,028|120 | O | - | C | C
-  | 24 | Field.getDeclaredAnnotations | 615,960 | 122 | O | - | C | C
-  | 25 | Method.getAnnotations | 965,740 | 293 | O | - | C | C
-  | 26 | Method.getDeclaredAnnotations | 976,304 | 338 | O | - | C | C
-  | 27 | Method.getParameterAnnotations | 963,708 | 45 | O | - | C | C
-  | 28 | Method.invoke | 1,468,228 | 240 | D | - | R | -
-  | 29 | Package.getImplementationTitle | 59,014 | 117 | C | C | C | -
-  | 30 | Parameter.getAnnotatedType | 88,806 | 1,135 | C | C | F | -
-  | 31 | Parameter.getParameterizedType | 88,764 | 1,131 | C | C | F | -
-  | 32 | Parameter.toString | 88,664 | 1,154 | C | C | F | -
-
-**Table III. Detected Java Reflection API non-conformances. Test Cases: number of test cases executed by our technique calling the method. Failures: number of test cases exposing non-conformance candidate in the method. Status: – = Unreported bug; O = Bug Open; F = Fixed bug; A = Accepted bug; R = Rejected bug; C = Correct result; D = Duplicated bug.**
- 
- * Our technique reported false positives for the following methods of Java Reflection API:
+ * Our technique detects false positives for the following methods of Java Reflection API:
    * Class.hashCode
    * Class.newInstance
    * Constructor.isAccessible
@@ -155,43 +124,53 @@
    * Method.isAccessible
    * Parameter.getDeclaringExecutable
    * Parameter.hashCode
- * Reported Non-conformance Candidates ([see all](all-reported-non-conformances.md))
+ * Reported Candidates ([see all](all-reported-candidates.md))
 
  
- | Method with Non-conformance | JVM | Report ID/Bug Tracker URL | Status |
+ | Method 				| Target | Report ID/Bug Tracker URL | Status |
  |:----------:|:---------------|---------------:|---------------:|
- |Class.getAnnotations |	Oracle |	9053675 |	Open |
- |Class.getConstructor |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1837 |	Fixed |
- |Class.getConstructors |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1838 |	Fixed |
- |Class.getDeclaredAnnotations |	Oracle |	https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202652 |	Duplicated |
- |Class.getDeclaredConstructor |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1839 |	Fixed |
- |Class.getDeclaredConstructors |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1840 |	Fixed |
- |Class.getDeclaredField |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1841 |	Fixed |
- |Class.getDeclaredFields |	Eclipse OpenJ9 |	Omitted* |	Fixed |
- |Class.getDeclaredMethod |	Eclipse OpenJ9 |	Omitted* |	Fixed |
- |Class.getDeclaredMethods |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1843 |	Fixed |
- |Class.getField |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1844 |	Fixed |
- |Class.getFields |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1845 |	Fixed |
- |Class.getMethod |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1846 |	Fixed |
- |Class.getMethods |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1847 |	Fixed |
- |Class.getResource |	Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202687 |	Accepted |
- |Class.getResource |	Eclipse OpenJ9 |	https://github.com/eclipse/openj9/issues/1848 |	Accepted |
- |Class.getResourceAsStream |	Oracle  |	https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202687 |	Accepted |
- |Class.getResourceAsStream |	Eclipse OpenJ9	| https://github.com/eclipse/openj9/issues/1849 |	Accepted |
- |Constructor.getAnnotatedParameterTypes |	Eclipse OpenJ9	| Omitted* |	Accepted |
- |Executable.getAnnotatedParameterTypes |	Eclipse OpenJ9	| Omitted* |	Accepted |
- |Executable.getAnnotations |	Oracle |	9053679 |	Open |
- |Executable.getDeclaredAnnotations |	Oracle |	9053680 |	Open |
- |Executable.getParameterAnnotations |	Oracle |	9053682 |	Open |
- |Field.getAnnotations |	Oracle |	9053683 |	Open |
- |Field.getDeclaredAnnotations |	Oracle |	9053684 |	Open |
- |Method.getAnnotations |	Oracle |	9053677 |	Open |
- |Method.getDeclaredAnnotations |	Oracle |	9053678 |	Open |
- |Method.getParameterAnnotations |	Oracle |	9053681 |	Open |
- |Method.invoke |	Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202689 |	Duplicated |
- |Method.invoke |	Eclipse OpenJ9	| Omitted* |	Duplicated |
- |Parameter.getAnnotatedType |	Eclipse OpenJ9	| Omitted* |	Accepted |
- |Parameter.getParameterizedType |	Eclipse OpenJ9	| Omitted* |	Accepted |
- |Parameter.toString |	Eclipse OpenJ9	| Omitted* |	Accepted |
+ |Class.getAnnotations 			| Specification | 9053675 								|Open |
+ |Class.getDeclaredAnnotations 		| Specification | https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202652	|Duplicated |
+ |Executable.getAnnotations 		| Specification | 9053679 								|Open|
+ |Executable.getDeclaredAnnotations 	| Specification | 9053680 								|Open|
+ |Executable.getParameterAnnotations 	| Specification | 9053682  								|Open|
+ |Field.getAnnotations 			| Specification | 9053683  								|Open|
+ |Field.getDeclaredAnnotations 		| Specification | 9053684  								|Open|
+ |Method.getAnnotations 		| Specification | 9053677  								|Open|
+ |Method.getDeclaredAnnotations 	| Specification | 9053678  								|Open|
+ |Method.getParameterAnnotations 	| Specification | 9053681  								|Open|
+ |Class.getResource 			| Specification | https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202687 	|Accepted |
+ |Class.getResourceAsStream 		| Specification | https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202687 	|Accepted |
+ |Class.getConstructor 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1837				|Fixed |
+ |Class.getConstructors 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1838				|Fixed |
+ |Class.getDeclaredConstructor 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1839 			|Fixed |
+ |Class.getDeclaredConstructors 	| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1840 			|Fixed |
+ |Class.getDeclaredField 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1841 			|Fixed |
+ |Class.getDeclaredFields 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1627 			|Fixed |
+ |Class.getDeclaredMethod 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1842 			|Fixed |
+ |Class.getDeclaredMethods 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1843 			|Fixed |
+ |Class.getField 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1844 			|Fixed |
+ |Class.getFields 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1845 			|Fixed |
+ |Class.getMethod 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1846 			|Fixed |
+ |Class.getMethods 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1847 			|Fixed |
+ |Constructor.getAnnotatedParameterTypes| Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8225394	|Fixed |
+ |Constructor.getAnnotatedParameterTypes| Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8225395 	|Fixed |
+ |Constructor.getAnnotatedParameterTypes| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1851 			|Fixed |
+ |Constructor.getAnnotatedParameterTypes| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/5994 			|Fixed |
+ |Constructor.getAnnotatedParameterTypes| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/5995 			|Fixed |
+ |Executable.getAnnotatedParameterTypes | Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8225396	|Fixed |
+ |Executable.getAnnotatedParameterTypes | Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8225398	|Fixed |
+ |Executable.getAnnotatedParameterTypes | Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1852 			|Fixed |
+ |Executable.getAnnotatedParameterTypes | Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/5997			|Fixed |
+ |Executable.getAnnotatedParameterTypes | Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/5998			|Fixed |
+ |Method.invoke 			| Oracle	| https://bugs.java.com/bugdatabase/view_bug.do?bug_id=JDK-8202689 	|Duplicated |
+ |Method.invoke 			| Oracle	| 9053687 	|Open |
+ |Method.invoke 			| Oracle	| 9053686 	|Open |
+ |Method.invoke 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1834 		|Rejected |
+ |Method.invoke 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1836 		|Rejected |
+ |Method.invoke 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1835 		|Rejected |
+ |Parameter.getAnnotatedType 		| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1850 		|Fixed |
+ |Parameter.getParameterizedType 	| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1854			|Fixed |
+ |Parameter.toString 			| Eclipse OpenJ9| https://github.com/eclipse/openj9/issues/1853			|Fixed |
 
-**Table IV. Reported non-conformance candidates (some links are ommited because of blind review).**
+**Table III. Reported candidates.**
